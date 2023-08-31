@@ -4,19 +4,23 @@ import { red } from '@mui/material/colors';
 
 // Create a theme instance.
 const theme = extendTheme({
+  Trello: {
+    appBarHeight: '48px',
+    boardBarHeight: '58px',
+  },
   colorSchemes: {
     light: {
       palette: {
-        // primary: {
-        //   main: '#ff5252'
-        // }
+        primary: {
+          main: '#ff5252',
+        },
       },
     },
     dark: {
       palette: {
-        // primary: {
-        //   main: '#000'
-        // }
+        primary: {
+          main: '#000',
+        },
       },
     },
   },
