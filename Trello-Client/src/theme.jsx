@@ -3,14 +3,14 @@ import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 // Create a theme instance.
 const theme = extendTheme({
   Trello: {
-    appBarHeight: '48px',
-    boardBarHeight: '58px',
+    appBarHeight: '58px',
+    boardBarHeight: '60px',
   },
   colorSchemes: {
     light: {
       palette: {
         primary: {
-          main: '#ff5252',
+          main: '#1976d2',
         },
       },
     },
