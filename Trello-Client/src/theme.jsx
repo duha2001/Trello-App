@@ -17,7 +17,50 @@ const theme = extendTheme({
     dark: {
       palette: {
         primary: {
-          main: '#000',
+          main: '#1976d2',
+        },
+      },
+    },
+  },
+  components: {
+    // Name of the component
+    MuiButton: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          textTransform: 'none',
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.primary.main,
+          fontSize: '0.875rem',
+        }),
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        // Ở đây tạo một function để truyền props theme để có thể lấy cái theme để ghi đè cho chuẩn
+        root: ({ theme }) => {
+          return {
+            color: theme.palette.primary.main,
+            fontSize: '0.875rem',
+            '.MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.primary.light,
+            },
+            // Overide đường viền của input khi hover
+            '&:hover': {
+              '.MuiOutlinedInput-notchedOutline': {
+                borderColor: theme.palette.primary.main,
+              },
+            },
+            // Overide đường viền của ô input khi nhấn vào
+            '& fieldset': {
+              borderWidth: '1px !important',
+            },
+          };
         },
       },
     },
