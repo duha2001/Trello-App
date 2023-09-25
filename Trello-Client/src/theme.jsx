@@ -7,20 +7,8 @@ const theme = extendTheme({
     boardBarHeight: '60px',
   },
   colorSchemes: {
-    light: {
-      palette: {
-        primary: {
-          main: '#1976d2',
-        },
-      },
-    },
-    dark: {
-      palette: {
-        primary: {
-          main: '#1976d2',
-        },
-      },
-    },
+    light: {},
+    dark: {},
   },
   components: {
     MuiCssBaseline: {
@@ -31,11 +19,11 @@ const theme = extendTheme({
             height: '8px',
           },
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: '#bdc3c7',
+            backgroundColor: '#dcdde1',
             borderRadius: '8px',
           },
           '*::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#0984e3',
+            backgroundColor: 'white',
             borderRadius: '8px',
           },
         },
@@ -43,41 +31,36 @@ const theme = extendTheme({
     },
     MuiButton: {
       styleOverrides: {
-        // Name of the slot
         root: {
           textTransform: 'none',
+          borderWidth: '0.5px',
+          '&:hover': {
+            borderWidth: '1px',
+          },
         },
       },
     },
     MuiInputLabel: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.main,
           fontSize: '0.875rem',
         }),
       },
     },
     MuiOutlinedInput: {
       styleOverrides: {
-        // Ở đây tạo một function để truyền props theme để có thể lấy cái theme để ghi đè cho chuẩn
-        root: ({ theme }) => {
-          return {
-            color: theme.palette.primary.main,
-            fontSize: '0.875rem',
-            '.MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.primary.light,
-            },
-            // Overide đường viền của input khi hover
-            '&:hover': {
-              '.MuiOutlinedInput-notchedOutline': {
-                borderColor: theme.palette.primary.main,
-              },
-            },
-            // Overide đường viền của ô input khi nhấn vào
-            '& fieldset': {
-              borderWidth: '1px !important',
-            },
-          };
+        root: {
+          fontSize: '0.875rem',
+          // Overide đường viền của ô input khi nhấn vào
+          '& fieldset': {
+            borderWidth: '0.5px !important',
+          },
+          '&:hover fieldset': {
+            borderWidth: '1.5px !important',
+          },
+          '&.Mui-focused filedset': {
+            borderWidth: '1.5px !important',
+          },
         },
       },
     },
