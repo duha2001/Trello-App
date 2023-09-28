@@ -18,6 +18,8 @@ import Button from '@mui/material/Button';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
 import ListCards from './ListCards/ListCards';
 import { mapOrder } from '~/utils/sorts';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 function Column({ column }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -27,6 +29,22 @@ function Column({ column }) {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: column._id,
+      data: { ...column },
+    });
+
+  const dndKitColumnStyles = {
+    touchAction: 'none',
+    /**
+     * Nếu sử dụng CSS.Transform như docs sẽ lỗi kiểu stretch
+     * https://github.com/clauderic/dnd-kit/issues/117
+     */
+    transform: CSS.Translate.toString(transform),
+    transition,
   };
 
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id');
@@ -43,6 +61,10 @@ function Column({ column }) {
         maxHeight: (theme) =>
           `calc(${theme.Trello.boardContentHeight} - ${theme.spacing(5)})`,
       }}
+      ref={setNodeRef}
+      style={dndKitColumnStyles}
+      {...attributes}
+      {...listeners}
     >
       {/* Box Column Header */}
       <Box
