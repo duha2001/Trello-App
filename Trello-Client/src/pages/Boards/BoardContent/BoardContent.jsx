@@ -115,7 +115,6 @@ function BoardContent({ board }) {
         const overCardIndex = overColumn?.cards?.findIndex(
           (card) => card._id === overCardId
         );
-        console.log('overCardIndex: ', overCardIndex);
         // Logic tính toán "cardIndex mới" (trên hoặc dưới của overCard) lấy chuẩn ra từ code của thư viện
         let newCardIndex;
         const isBelowOverItem =
@@ -129,7 +128,6 @@ function BoardContent({ board }) {
 
         // Clone mảng OderedColumnsState cũ ra một cái mới để xử lý data rồi return - cập nhập lại OrderedColumnsState mới
         const nextColumns = cloneDeep(prevColumns);
-        console.log('nextColumns:', nextColumns);
         const nextActiveColumn = nextColumns.find(
           (column) => column._id === activeColumn._id
         );
@@ -137,9 +135,6 @@ function BoardContent({ board }) {
         const nextOverColumn = nextColumns.find(
           (column) => column._id === overColumn._id
         );
-
-        console.log('nextActiveColumn: ', nextActiveColumn);
-        console.log('nextOverColumn: ', nextOverColumn);
 
         // Column cũ
         if (nextActiveColumn) {
@@ -153,16 +148,13 @@ function BoardContent({ board }) {
             (card) => card._id
           );
         }
-        console.log('newCardIndex: ', newCardIndex);
-        console.log('activeDraggingCardData: ', activeDraggingCardData);
+
         // Column mới
         if (nextOverColumn) {
-          console.log('nextOverColumn: ', nextOverColumn);
           // Kiểm tra xem card đang kéo nó có tồn tại ở overColumn chưa, nếu có thì cần xóa nó trước
           nextOverColumn.cards = nextOverColumn.cards.filter(
             (card) => card?._id !== activeDraggingCardId
           );
-          console.log('nextOverColumn.cards: ', nextOverColumn.cards);
           // Tiếp theo là thêm cái card đang kéo vào overColumn theo vị trí index mới
           nextOverColumn.cards = nextOverColumn.cards.toSpliced(
             newCardIndex,
