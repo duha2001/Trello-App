@@ -7,6 +7,8 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Card as Muicard } from '@mui/material';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 function Card({ card }) {
   const shouldShowCardActions = () => {
@@ -16,6 +18,30 @@ function Card({ card }) {
       !!card?.attachments?.length
     );
   };
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: card._id,
+    data: { ...card },
+  });
+
+  const dndKitCardStyles = {
+    touchAction: 'none',
+    /**
+     * Nếu sử dụng CSS.Transform như docs sẽ lỗi kiểu stretch
+     * https://github.com/clauderic/dnd-kit/issues/117
+     */
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+  };
+
   return (
     <Muicard
       sx={{
@@ -23,6 +49,10 @@ function Card({ card }) {
         boxShadow: '0 1px 1px rgba(0,0,0,0.2)',
         overflow: 'unset',
       }}
+      ref={setNodeRef}
+      style={dndKitCardStyles}
+      {...attributes}
+      {...listeners}
     >
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
