@@ -12,12 +12,13 @@ import {
   defaultDropAnimationSideEffects,
   closestCorners,
   pointerWithin,
-  rectIntersection,
+  // rectIntersection,
   getFirstCollision,
-  closestCenter,
+  // closestCenter,
 } from '@dnd-kit/core';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
+import { generatePlaceholderCard } from '~/utils/formatter';
 import { arrayMove } from '@dnd-kit/sortable';
 import Column from './ListColumns/Column/Column';
 import Card from './ListColumns/Column/ListCards/Card/Card';
@@ -118,6 +119,11 @@ function BoardContent({ board }) {
           (card) => card._id !== activeDraggingCardId
         );
 
+        // Thêm Placeholder card nếu Column rỗng: Bị kéo hết card đi, và ở column không còn card nào nữa
+        if (isEmpty(nextActiveColumn.cards)) {
+          console.log('Card cuối cùng bị kéo đi');
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)];
+        }
         // Cập nhập lại mảng cardOrderIds cho chuẩn dữ liệu
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(
           (card) => card._id
@@ -142,10 +148,18 @@ function BoardContent({ board }) {
           0,
           rebuildActiveDraggingCardData
         );
+
+        // Xóa placeholder card đi nếu nó đang tồn tại
+        // Dùng để lọc đi các cái card là placeholderCard và giữ lại nhứng cái không phải
+        nextOverColumn.cards = nextOverColumn.cards.filter(
+          (card) => !card.FE_PlaceholderCard
+        );
+
         // Cập nhập lại mảng cardOrderIds cho chuẩn dữ liệu
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(
           (card) => card._id
         );
+        // console.log('nextColumns: ', nextColumns);
       }
       return nextColumns;
     });
@@ -171,7 +185,7 @@ function BoardContent({ board }) {
 
   // Trigger trong quá trình kéo một phần tử
   const handleDragOver = (event) => {
-    console.log('handleDragOver');
+    //console.log('handleDragOver');
     // Không làm gì thêm nếu đang kéo column
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
       return;
@@ -349,23 +363,29 @@ function BoardContent({ board }) {
       }
       // Tìm các điểm giao nhau, va chạm - intersections với con trỏ
       const pointerIntersections = pointerWithin(args);
+      //console.log('pointerIntersections: ', pointerIntersections);
 
       // Thuật toán phát hiện va chạm sẽ trả về một mảng các va chạm ở đây
-      // Intersections sẽ trả về một cái array
-      const intersections = !!pointerIntersections?.length
-        ? pointerIntersections
-        : rectIntersection(args);
+      // NẾu mảng rỗng thì retrun lun
+      if (!pointerIntersections?.length) {
+        return;
+      }
 
-      let overId = getFirstCollision(intersections, 'id');
+      // Intersections sẽ trả về một cái array
+      // const intersections = !!pointerIntersections?.length
+      //   ? pointerIntersections
+      //   : rectIntersection(args);
+
+      let overId = getFirstCollision(pointerIntersections, 'id');
       // console.log('overId: ', overId);
       if (overId) {
-        // Nếu cái cover nó là column thì sẽ tìm tới cái cardId gần nhất bên trong khu vực va chạm đó dựa vào thuật toán phát hiện va chạm closesCenter hoặc closesCorners đều được. Tuy nhiên ở đây dùng closestCenter mượt mà hơn.
+        // Nếu cái cover nó là column thì sẽ tìm tới cái cardId gần nhất bên trong khu vực va chạm đó dựa vào thuật toán phát hiện va chạm closesCenter hoặc closesCorners đều được. Tuy nhiên ở đây dùng closestCorners mượt mà hơn.
         const checkColumn = orderedColumns.find(
           (column) => column._id === overId
         );
         if (checkColumn) {
-          console.log('overId before: ', overId);
-          overId = closestCenter({
+          //console.log('overId before: ', overId);
+          overId = closestCorners({
             ...args,
             droppableContainers: args.droppableContainers.filter(
               (container) => {
@@ -376,7 +396,7 @@ function BoardContent({ board }) {
               }
             ),
           })[0]?.id;
-          console.log('overId after: ', overId);
+          //console.log('overId after: ', overId);
         }
         lastOverId.current = overId;
         return [{ id: overId }];
