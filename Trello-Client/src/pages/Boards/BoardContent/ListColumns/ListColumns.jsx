@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Column from './Column/Column';
 import Button from '@mui/material/Button';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import { toast } from 'react-toastify';
 import { InputAdornment } from '@mui/material';
 import {
   SortableContext,
@@ -19,6 +20,7 @@ function ListColumns({ columns }) {
   const [newColumnTitle, setNewColumnTitle] = useState('');
   const addNewColumn = () => {
     if (!newColumnTitle) {
+      toast.error('Please enter Column Title!');
       return;
     }
     // Gọi API
