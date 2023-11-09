@@ -24,7 +24,7 @@ import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close';
 import { toast } from 'react-toastify';
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -65,13 +65,18 @@ function Column({ column }) {
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
 
   const [newCardTitle, setNewCardTitle] = useState('');
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title!', { position: 'bottom-right' });
       return;
     }
     // Gọi API
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id,
+    };
 
+    await createNewCard(newCardData);
     // Đóng trạng thái thêm Card mới & Clear Input
     toggleOpenNewCardForm();
     setNewCardTitle('');
